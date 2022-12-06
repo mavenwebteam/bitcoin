@@ -20,6 +20,10 @@ Route::get('/coin-market', function () {
     return view('coin-market');
 });
 Auth::routes();
+
+Route::get('/mailtest',function(){
+    return view('emails.invoicemail');
+});
 Route::get('/customer/otpverify','App\Http\Controllers\otpverifycontroller@index');
 Route::post('/customer/verify','App\Http\Controllers\otpverifycontroller@verify');
 Route::get('/customer/register-submit',[App\Http\Controllers\CustomerAddController::class, 'registerCustomeradd'])->name('customer.register.submit');

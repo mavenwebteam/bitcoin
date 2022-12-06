@@ -7,6 +7,8 @@ use App\Models\Customer;
 use App\Models\Admin;
 use App\Models\Invoice;
 use Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Invoicemail;
 use Illuminate\Support\Facades\Hash;
 
 use App\Constants\Constant;
@@ -39,7 +41,7 @@ class AdminController extends Controller
     }
     public function confirm($order_id){
         $data=Invoice::where('order_id',$order_id)->first();
-        
+        /*
         $response = self::signedRequest('POST', 'sapi/v1/giftcard/createCode', [
             'token' => 'USDT',
             'amount'=>$data->amount,
@@ -60,11 +62,22 @@ class AdminController extends Controller
             echo "<h2>Verify Code Response:</h2>";
             echo "<h4 style='color:#000088;'>".json_encode($responseVerify)."</h4>";
             
-            
+*/
             $data->update([
                 'order'=>"confirmed"
-            ]);    
-        //return redirect('/admin');
+            ]);
+            $details = $details = [
+                'title' => 'Mail from binance gift card',
+                'username' => $data->username,
+                'email'=>$data->email,
+                'order_id'=>$data->order_id,
+                'date'=>$data->updated_at,
+                'phone'=>$data->phone,
+                'amount'=>$data->amount,
+                'reference_no'=>$data->referenceno
+            ];
+            Mail::to($data->email)->send(new \App\Mail\Invoicemail($details));
+        return redirect('/admin');
     }
     public function user()
     {
