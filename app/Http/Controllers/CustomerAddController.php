@@ -17,7 +17,9 @@ class CustomerAddController extends Controller
     {
         $validated = $request->validate([
             'password' => 'required|min:8',
-            'email' => 'required',
+            'email' => 'required|email|unique:customers',
+            'name'=>'required|unique:customers',
+            'phone'=>'required|unique:customers'
         ]);
             $user = new Customer;
             $user->name = $request->name;
@@ -26,10 +28,10 @@ class CustomerAddController extends Controller
             $user->type = 'customer';
             $user->password = Hash::make($request->password);
             $user->save();
-            //return view('customer.login');
+            return view('customer.login');
             $expiresAt = Carbon::now()->addMinutes(10);
             Cache::put('name', $request->name, $expiresAt);
-            return redirect('/customer/otpverify');
+            //return redirect('/customer/otpverify');
 
     }
 }
